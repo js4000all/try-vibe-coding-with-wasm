@@ -5,6 +5,7 @@ import './App.css';
 
 type Result = {
   source: 'WASM' | 'JS';
+  input: string;
   factors: number[];
   time: number;
 };
@@ -42,6 +43,7 @@ function App() {
 
     setResults(prev => [{
       source,
+      input: inputNumber,
       factors: factors,
       time: endTime - startTime,
     }, ...prev]);
@@ -70,7 +72,7 @@ function App() {
         {results.map((result, index) => (
           <div key={index} className="result-item">
             <p><strong>{result.source}</strong></p>
-            <p>Number: {inputNumber}</p>
+            <p>Number: {result.input}</p>
             <p>Factors: {result.factors.join(', ')}</p>
             <p>Time: {result.time.toFixed(2)} ms</p>
           </div>
