@@ -27,15 +27,21 @@ function App() {
       return;
     }
 
+    let factors: number[];
     const startTime = performance.now();
-    const factors = source === 'WASM'
-        ? factorizeWasm(num)
-        : factorizeJs(Number(num));
+
+    if (source === 'WASM') {
+      const wasmFactors = factorizeWasm(num);
+      factors = Array.from(wasmFactors).map(n => Number(n));
+    } else {
+      factors = factorizeJs(Number(num));
+    }
+
     const endTime = performance.now();
 
     setResults(prev => [...prev, {
       source,
-      factors: Array.from(factors),
+      factors: factors,
       time: endTime - startTime,
     }]);
   };
