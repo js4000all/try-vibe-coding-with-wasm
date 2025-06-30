@@ -1,35 +1,76 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react';
+import init, { factorize as factorizeWasm } from 'wasm';
+import { factorize as factorizeJs } from './factorize';
+import './App.css';
+
+type Result = {
+  source: 'WASM' | 'JS';
+  factors: number[];
+  time: number;
+};
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [inputNumber, setInputNumber] = useState<string>('9007199254740991');
+  const [results, setResults] = useState<Result[]>([]);
+  const [wasmInitialized, setWasmInitialized] = useState(false);
+
+  useEffect(() => {
+    init().then(() => {
+      setWasmInitialized(true);
+    });
+  }, []);
+
+  const handleRun = async (source: 'WASM' | 'JS') => {
+    const num = BigInt(inputNumber);
+    if (num <= 1) {
+      alert('Please enter a number greater than 1.');
+      return;
+    }
+
+    const startTime = performance.now();
+    const factors = source === 'WASM'
+        ? factorizeWasm(num)
+        : factorizeJs(Number(num));
+    const endTime = performance.now();
+
+    setResults(prev => [...prev, {
+      source,
+      factors: Array.from(factors),
+      time: endTime - startTime,
+    }]);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
+    <div className="App">
+      <h1>WASM vs JS Prime Factorization</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+        <input
+          type="number"
+          value={inputNumber}
+          onChange={(e) => setInputNumber(e.target.value)}
+          placeholder="Enter a number"
+        />
+        <button onClick={() => handleRun('WASM')} disabled={!wasmInitialized}>
+          Run (WASM)
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+        <button onClick={() => handleRun('JS')}>
+          Run (JS)
+        </button>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+
+      <div className="results">
+        <h2>Results</h2>
+        {results.map((result, index) => (
+          <div key={index} className="result-item">
+            <p><strong>{result.source}</strong></p>
+            <p>Number: {inputNumber}</p>
+            <p>Factors: {result.factors.join(', ')}</p>
+            <p>Time: {result.time.toFixed(2)} ms</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
