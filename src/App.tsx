@@ -34,7 +34,8 @@ function App() {
       const wasmFactors = factorizeWasm(num);
       factors = Array.from(wasmFactors).map(n => Number(n));
     } else {
-      factors = factorizeJs(Number(num));
+      const jsFactors = factorizeJs(num);
+      factors = jsFactors.map(n => Number(n));
     }
 
     const endTime = performance.now();

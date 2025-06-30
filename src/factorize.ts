@@ -1,14 +1,14 @@
-export function factorize(n: number): number[] {
-  const factors: number[] = [];
-  let d = 2;
+export function factorize(n: bigint): bigint[] {
+  const factors: bigint[] = [];
+  let d = 2n;
   while (d * d <= n) {
-    while (n % d === 0) {
+    while (n % d === 0n) {
       factors.push(d);
       n /= d;
     }
-    d += 1;
+    d += 1n;
   }
-  if (n > 1) {
+  if (n > 1n) {
     factors.push(n);
   }
   return factors;
