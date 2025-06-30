@@ -39,11 +39,11 @@ function App() {
 
     const endTime = performance.now();
 
-    setResults(prev => [...prev, {
+    setResults(prev => [{
       source,
       factors: factors,
       time: endTime - startTime,
-    }]);
+    }, ...prev]);
   };
 
   return (
