@@ -38,8 +38,30 @@ button {
   padding: 1rem;
   margin-bottom: 1rem;
   text-align: left;
+  color: #333;
 }
 
 .result-item p {
   margin: 0.5rem 0;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #121212;
+    color: #eee;
+  }
+  .card {
+    background: #242424;
+  }
+  .result-item {
+    background: #333;
+    border-color: #555;
+    color: #eee;
+  }
+  input, button {
+    background-color: #444;
+    color: #eee;
+    border: 1px solid #666;
+  }
 }
