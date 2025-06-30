@@ -8,6 +8,8 @@ RUN set -x \
   && rm -rf /var/lib/apt/lists/* \
   && npm install -g @google/gemini-cli
 RUN set -x \
+  && cargo install wasm-pack
+RUN set -x \
   && useradd -m -s /bin/bash coder
 
 ENV LESSCHARSET=utf-8
